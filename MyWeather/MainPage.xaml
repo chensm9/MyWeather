@@ -8,6 +8,8 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
+        <TextBlock HorizontalAlignment="Left" Margin="381,369,0,0" Text="输入城市：" TextWrapping="Wrap" VerticalAlignment="Top" Height="22"/>
+        <TextBox x:Name="SearchBox" HorizontalAlignment="Left" Margin="463,368,0,0" Text="" VerticalAlignment="Top"/>
+        <Button x:Name="SureButton" Content="确定" HorizontalAlignment="Left" Margin="557,368,0,0" VerticalAlignment="Top" Click="SureButton_Click"/>
     </Grid>
 </Page>

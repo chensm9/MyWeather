@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MyWeather.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,9 +23,16 @@ namespace MyWeather
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        WeatherViewModels weatherViewModels;
+
         public MainPage()
         {
             this.InitializeComponent();
+            weatherViewModels = WeatherViewModels.GetInstance();
+        }
+
+        private void SureButton_Click(object sender, RoutedEventArgs e) {
+            weatherViewModels.GetWeather(this.SearchBox.Text);
         }
     }
 }
