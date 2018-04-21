@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,20 +12,35 @@ namespace MyWeather.ViewModels {
     class WeatherViewModels {
 
         private WeatherHttpService service;
+        public ObservableCollection<WeatherItem> AllItems { set; get; }
+        public CurrentWeatherItem current_item;
+        private Windows.Data.Json.JsonObject json { set; get; }
 
         private WeatherViewModels() {
             service = WeatherHttpService.GetInstance();
+            current_item = new CurrentWeatherItem();
+            AllItems = new ObservableCollection<WeatherItem>();
+            GetWeather("广州");
         }
 
         public async void GetWeather(string text) {
-            Windows.Data.Json.JsonObject jo = await service.GetWeatherItem(text);
+            Windows.Data.Json.JsonObject total_json = await service.GetWeatherItem(text);
             StringBuilder message = new StringBuilder("");
-            message.AppendLine(jo.ToString());
-            if (message.Equals("")) {
-                message.AppendLine("搜索不到相关条目");
+            if (total_json.GetNamedNumber("showapi_res_code") != 0) {
+                message.AppendLine(total_json.GetNamedString("showapi_res_error"));
+                MessageDialog dialog = new MessageDialog(message.ToString());
+                await dialog.ShowAsync();
+            } else {
+                json = total_json.GetNamedObject("showapi_res_body");
+                current_item.Area = json.GetNamedObject("cityInfo").GetNamedString("c9") +
+                                    json.GetNamedObject("cityInfo").GetNamedString("c7") + "省" +
+                                    json.GetNamedObject("cityInfo").GetNamedString("c3") + "市";
+                current_item.Json = json.GetNamedObject("now");
+                AllItems.Clear();
+                for (int i = 1; i <= 7; i++) {
+                    AllItems.Add(new WeatherItem(json.GetNamedObject("f"+i)));
+                }
             }
-            MessageDialog dialog = new MessageDialog(message.ToString());
-            await dialog.ShowAsync();
         }
 
         private static WeatherViewModels instance;
