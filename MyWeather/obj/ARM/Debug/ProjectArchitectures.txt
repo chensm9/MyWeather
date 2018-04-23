@@ -1,0 +1,1 @@
+C:\Users\admin\Desktop\MyWeather\MyWeather\MyWeather.csproj;arm

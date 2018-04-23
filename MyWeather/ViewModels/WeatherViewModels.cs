@@ -25,6 +25,11 @@ namespace MyWeather.ViewModels {
 
         public async void GetWeather(string text) {
             Windows.Data.Json.JsonObject total_json = await service.GetWeatherItem(text);
+            if (total_json == null) {
+                MessageDialog dialog = new MessageDialog("搜索不到相关城市信息\n请检查输入是否无误");
+                await dialog.ShowAsync();
+                return;
+            }
             StringBuilder message = new StringBuilder("");
             if (total_json.GetNamedNumber("showapi_res_code") != 0) {
                 message.AppendLine(total_json.GetNamedString("showapi_res_error"));
